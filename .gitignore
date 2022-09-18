@@ -129,3 +129,5 @@ dmypy.json
 .pyre/
 
 .idea
+/proto/technics_42099_pb2.py
+/proto/technics_42099_pb2_grpc.py

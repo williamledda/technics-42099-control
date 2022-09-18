@@ -7,7 +7,7 @@ import technics_42099_pb2 as pb
 
 def run():
     empty = pb.google_dot_protobuf_dot_empty__pb2.Empty()
-    with grpc.insecure_channel('192.168.0.32:50051') as channel:
+    with grpc.insecure_channel('192.168.0.31:50051') as channel:
         car_service_stub = car_grpc.CarStatusStub(channel)
         while True:
             response = car_service_stub.GetBatteryInfo(empty)
