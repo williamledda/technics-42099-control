@@ -3,13 +3,9 @@ import "google/protobuf/empty.proto";
 
 package technics;
 
-message DriveSpeedRequest {
-  double value = 1;
-}
-
-message SteerRequest {
-  double speed = 1;
-  double angle = 2;
+message DriveRequest {
+  double motor_speed = 1;
+  double steering_angle = 2;
 }
 
 message BatteryStatus {
@@ -17,18 +13,23 @@ message BatteryStatus {
   double current = 2;
 }
 
+message IMUStatus {
+  double pitch = 1;
+  double roll = 2;
+  repeated double angular_velocity = 3 [packed=true];
+  repeated double acceleration = 4;
+}
+
 message SteeringState {
   double angle = 1;
 }
 
 service DriveCommand {
-  rpc DriveForward (DriveSpeedRequest) returns (google.protobuf.Empty);
-  rpc DriveBackward (DriveSpeedRequest) returns (google.protobuf.Empty);
-  rpc SteerLeft (SteerRequest) returns (google.protobuf.Empty);
-  rpc SteerRight (SteerRequest) returns (google.protobuf.Empty);
+  rpc Drive (DriveRequest) returns (google.protobuf.Empty);
 }
 
 service CarStatus {
   rpc GetBatteryInfo (google.protobuf.Empty) returns (BatteryStatus);
+  rpc GetIMUData (google.protobuf.Empty) returns (IMUStatus);
   rpc GetSteeringAngle (google.protobuf.Empty) returns (SteeringState);
 }
