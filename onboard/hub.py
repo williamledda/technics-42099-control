@@ -4,7 +4,7 @@ from pybricks.hubs import TechnicHub
 from pybricks.tools import wait, StopWatch
 
 from pybricks.pupdevices import Motor
-from pybricks.parameters import Port, Direction, Stop
+from pybricks.parameters import Port, Direction, Stop, Color
 
 hub = TechnicHub()
 command_buffer = ""
@@ -18,6 +18,7 @@ class MotorControl:
         self.steer = Motor(Port.C)
         self.front = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         self.rear = Motor(Port.B, Direction.COUNTERCLOCKWISE)
+        hub.light.off()
 
     def init_motors(self):
         # Lower the acceleration so the car starts and stops realistically.
@@ -69,15 +70,6 @@ def status_task():
                                                        velocity[1], velocity[2], acc[0], acc[1], acc[2]))
 
 
-def drive(motor_speed):
-    motor_control.drive(motor_speed)
-    print("Driving speed: {}".format(motor_speed))
-
-
-def steer(steer_angle):
-    print("Steering angle: {}".format(steer_angle))
-
-
 def input_handler(command):
     global running
     # Obtain the list of commands
@@ -93,8 +85,14 @@ def input_handler(command):
         steer_angle = float(command_list[2])
 
         # Set driving speed and steering angle
-        print("Driving speed: {} Steering angle: {}".format(motor_speed, steer_angle))
+        # print("Driving speed: {} Steering angle: {}".format(motor_speed, steer_angle))
         motor_control.drive(motor_speed, steer_angle)
+        if motor_speed < 0:
+            hub.light.on(Color.WHITE)
+        elif motor_speed == 0:
+            hub.light.off()
+        else:
+            hub.light.blink(Color.GREEN, [100, 50])
 
 
 def update_input(char):
