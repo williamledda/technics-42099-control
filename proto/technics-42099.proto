@@ -6,6 +6,8 @@ package technics;
 message DriveRequest {
   double motor_speed = 1;
   double steering_angle = 2;
+  int32 direction = 3;
+  bool is_braking = 4;
 }
 
 message BatteryStatus {

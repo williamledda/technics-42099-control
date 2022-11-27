@@ -18,7 +18,7 @@ class MotorControl:
         self.steer = Motor(Port.C)
         self.front = Motor(Port.A, Direction.COUNTERCLOCKWISE)
         self.rear = Motor(Port.B, Direction.COUNTERCLOCKWISE)
-        hub.light.off()
+        # hub.light.off()
 
     def init_motors(self):
         # Lower the acceleration so the car starts and stops realistically.
@@ -79,20 +79,27 @@ def input_handler(command):
         # Stop
         running = False
     elif command_list[0] == "d":
-        # drive
-        # Get motor speed and steering angle
-        motor_speed = float(command_list[1])
-        steer_angle = float(command_list[2])
+        try:
+            # drive
+            # Get motor speed and steering angle
+            motor_speed = float(command_list[1])
+            steer_angle = float(command_list[2])
+            direction = int(command_list[3])
+            braking = int(command_list[4])
 
-        # Set driving speed and steering angle
-        # print("Driving speed: {} Steering angle: {}".format(motor_speed, steer_angle))
-        motor_control.drive(motor_speed, steer_angle)
-        if motor_speed < 0:
-            hub.light.on(Color.WHITE)
-        elif motor_speed == 0:
-            hub.light.off()
-        else:
-            hub.light.blink(Color.GREEN, [100, 50])
+            # Set driving speed and steering angle
+            # print("Driving speed: {} Steering angle: {}".format(motor_speed, steer_angle))
+            motor_control.drive(motor_speed, steer_angle)
+            if braking == 1:
+                hub.light.on(Color.RED)
+            elif direction < 0:
+                hub.light.on(Color.WHITE)
+            elif direction > 0:
+                hub.light.off()
+            else:
+                hub.light.blink(Color.GREEN, [200, 1000])
+        except ValueError:
+            print("Skip Invalid command {}".format(command))
 
 
 def update_input(char):

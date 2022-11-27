@@ -109,7 +109,10 @@ async def hub_main():
     while not stop:
         # print(f"Command from grpc: {drive_grpc_service.drive_data['motor']} "
         #       f"{drive_grpc_service.drive_data['steering_angle']}")
-        drive_cmd = f"d:{drive_grpc_service.drive_data['motor']}:{drive_grpc_service.drive_data['steering_angle']};"
+        drive_cmd = f"d:{drive_grpc_service.drive_data['motor']}:" \
+                    f"{drive_grpc_service.drive_data['steering_angle']}:" \
+                    f"{drive_grpc_service.direction}:" \
+                    f"{int(drive_grpc_service.is_braking)};"
         await hub.write(drive_cmd.encode())
         await asyncio.sleep(0.2)
 

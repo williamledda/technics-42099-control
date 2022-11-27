@@ -42,7 +42,9 @@ def run(ps4_input: PS4Input) -> None:
         drive_speed = max(0, drive_speed) * ps4_input.direction()
 
         drive_command_stub.Drive(pb.DriveRequest(motor_speed=drive_speed,
-                                                 steering_angle=ps4_input.steer_angle()))
+                                                 steering_angle=ps4_input.steer_angle(),
+                                                 direction=ps4_input.direction(),
+                                                 is_braking=(ps4_input.brake_level() > 0)))
         time.sleep(0.05)
 
     status_th.join()
