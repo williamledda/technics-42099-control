@@ -4,7 +4,7 @@ import threading
 
 import technics_42099_pb2 as pb
 import technics_42099_pb2_grpc as car_grpc
-from ps4_input import PS4Input
+from input import InputDevice, PS4Input
 
 empty = pb.google_dot_protobuf_dot_empty__pb2.Empty()
 stop = False
@@ -26,7 +26,7 @@ def status_loop() -> None:
             time.sleep(1.0)
 
 
-def run(ps4_input: PS4Input) -> None:
+def run(input_device: InputDevice) -> None:
     global stop
     status_th = threading.Thread(target=status_loop)
     drive_channel = grpc.insecure_channel('192.168.0.31:50052')
@@ -37,21 +37,21 @@ def run(ps4_input: PS4Input) -> None:
     while not stop:
         # print(f"PS4 drive command: {ps4_input.throttle_level()} {ps4_input.brake_level()} "
         #       f"{ps4_input.steer_angle()} {ps4_input.direction()}")
-        drive_speed = (ps4_input.throttle_level() - ps4_input.brake_level()) * 10
+        drive_speed = (input_device.throttle_level() - input_device.brake_level()) * 10
 
-        drive_speed = max(0, drive_speed) * ps4_input.direction()
+        drive_speed = max(0, drive_speed) * input_device.direction()
 
         drive_command_stub.Drive(pb.DriveRequest(motor_speed=drive_speed,
-                                                 steering_angle=ps4_input.steer_angle(),
-                                                 direction=ps4_input.direction(),
-                                                 is_braking=(ps4_input.brake_level() > 0)))
+                                                 steering_angle=input_device.steer_angle(),
+                                                 direction=input_device.direction(),
+                                                 is_braking=(input_device.brake_level() > 0)))
         time.sleep(0.05)
 
     status_th.join()
 
 
-def read_input(controller: PS4Input) -> None:
-    controller.listen()
+def read_input(dev: InputDevice) -> None:
+    dev.listen()
 
 
 if __name__ == '__main__':
